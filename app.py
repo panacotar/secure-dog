@@ -99,8 +99,49 @@ def login():
   msg = get_flashed_messages()
   print(msg)
 
-  # Forget any user_id
+    # Forget any user_id
   session.clear()
+
+  if request.method == "POST":
+    # Validate presence of data
+    email = request.form.get("email")
+    
+    if not email:
+      flash("Email missing")
+      return render_template("login.html")
+    if not request.form.get("password"):
+      flash("Password missing")
+      return render_template("login.html")
+    
+    # Check if user exists in the DB
+    res = db.execute("SELECT * FROM users WHERE email = ?", email)
+    if not len(res):
+      flash("A user with this email does not exists")
+      return render_template("login.html")
+    
+    user = res[0]
+    # Check the hash password
+    
+    # Generate confirmation code
+    confirmation_code = get_confirmation_code()
+
+    # Get expiration date
+    code_expiration = get_expiration_date_milliseconds()
+
+    token_data = [confirmation_code, code_expiration]
+    sql_token = json.dumps(token_data)
+    # Save the token in the DB
+    db.execute(
+      "UPDATE users SET token=? WHERE id = ?"
+        sql_token,
+        user["id"]
+      )
+    
+    # Send the confirmation code by email
+    mail_confirmation_code(mail, email, confirmation_code)
+    # Move user to /confirm
+    return redirect("confirm.html", email=user["email"])
+
 
   return render_template("login.html")
 
