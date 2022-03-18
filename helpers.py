@@ -2,6 +2,7 @@ from random import randint
 import time
 from flask import redirect, session
 from functools import wraps
+from flask_mail import Message
 
 def login_required(f):
     """
@@ -31,3 +32,9 @@ def get_expiration_date_milliseconds():
   # Return the unix time 15 mins from now
   return time_now_ms + unix_15
 
+def mail_confirmation_code(mail_app, email_address, code):
+  msg = Message('Secured Woof', sender = 'securedog@gmail.com', recipients = [str(email_address)])
+  nl = '\n'
+  msg.body = f"Confirmation code to authenticate into Secure Dog is:{nl}<strong>{code}</strong>{nl}{nl}Happy browsing!"
+  mail_app.send(msg)
+  return True
