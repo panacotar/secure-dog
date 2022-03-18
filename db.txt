@@ -1,0 +1,11 @@
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+  email TEXT NOT NULL, 
+  username TEXT NOT NULL, 
+  hash TEXT NOT NULL,
+  profile_photo_url TEXT, 
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+  bio TEXT,
+  confirmed INTEGER DEFAULT 0,
+  token TEXT
+)
