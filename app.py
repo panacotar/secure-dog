@@ -3,7 +3,7 @@ import os
 import json
 
 from cs50 import SQL
-from flask import Flask, flash, jsonify, redirect, render_template, request, session
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, get_flashed_messages
 from flask_session import Session
 from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -96,6 +96,8 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
   """Log user in"""
+  msg = get_flashed_messages()
+  print(msg)
 
   # Forget any user_id
   session.clear()
@@ -113,21 +115,22 @@ def confirm():
       return render_template("confirm.html")
     
     # Fetch user
-    # id = request.form.get("user-id")
-    id = 1
-    user = db.execute("SELECT * FROM users WHERE id = ?", id)[0]
-    print(f"res get user {user}")
+    # email = request.form.get("email")
+    email = 'basmiw@gmail.com'
+    res = db.execute("SELECT * FROM users WHERE email = ?", email)
 
     # Check if user exists
-    if not user:
+    if not len(res):
       flash("A user with this email does not exist")
-      return redirect("/login.html")
+      return redirect("/login")
 
+    user = res[0]
+    print(f"res get user {user}")
 
     # Check if user has an active token
     if not user["token"]:
       flash("User does not have an active token")
-      return redirect("/login.html")
+      return redirect("/login")
 
     # Load the token json
     token = json.loads(user['token'])
@@ -139,11 +142,11 @@ def confirm():
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
       flash("Sorry the token has expired")
-      return redirect("/login.html")
+      return redirect("/login")
     # Check if token code is the same as the submitted code
     if code != confirm_code:
       flash("Sorry the confirmation code is wrong")
-      return redirect("/login.html")
+      return redirect("/login")
 
     # If not confirmed, update the confirmed column of the user
     if not user["confirmed"]:
