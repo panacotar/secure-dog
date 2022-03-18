@@ -5,6 +5,8 @@ from flask import Flask, flash, jsonify, redirect, render_template, request, ses
 from flask_session import Session
 from flask_mail import Mail, Message
 
+from helpers import get_confirmation_code
+
 # Configure application
 app = Flask(__name__, instance_relative_config=True)
 
@@ -31,7 +33,8 @@ db = SQL("sqlite:///dog.db")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-  return render_template("index.html")
+  confirm_code = get_confirmation_code()
+  return render_template("index.html", confirm_code=confirm_code)
 
 @app.route("/mailing/<mail_address>")
 def mailing(mail_address):
@@ -40,3 +43,7 @@ def mailing(mail_address):
    msg.body = "Secure dog email"
    mail.send(msg)
    return "Sent"
+
+
+if __name__ == '__main__':
+   app.run(debug = True)
