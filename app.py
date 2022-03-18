@@ -102,6 +102,60 @@ def login():
 
   return render_template("login.html")
 
+@app.route("/confirm", methods=["GET", "POST"])
+def confirm():
+  if request.method == "POST":
+  
+    # Validate existence of confirmation code
+    code = request.form.get("confirm-code")
+    if not code:
+      flash("Code missing")
+      return render_template("confirm.html")
+    
+    # Fetch user
+    # id = request.form.get("user-id")
+    id = 1
+    user = db.execute("SELECT * FROM users WHERE id = ?", id)[0]
+    print(f"res get user {user}")
+
+    # Check if user exists
+    if not user:
+      flash("A user with this email does not exist")
+      return redirect("/login.html")
+
+
+    # Check if user has an active token
+    if not user["token"]:
+      flash("User does not have an active token")
+      return redirect("/login.html")
+
+    # Load the token json
+    token = json.loads(user['token'])
+    confirm_code = token[0]
+    code_expiration = token[1]
+
+    # Remove the confirmation code form the DB
+    db.execute("UPDATE users SET token=NULL WHERE id = ?", id)
+    # Check if token is expired
+    if get_time_now_ms() > code_expiration:
+      flash("Sorry the token has expired")
+      return redirect("/login.html")
+    # Check if token code is the same as the submitted code
+    if code != confirm_code:
+      flash("Sorry the confirmation code is wrong")
+      return redirect("/login.html")
+
+    # If not confirmed, update the confirmed column of the user
+    if not user["confirmed"]:
+      db.execute("UPDATE users SET confirmed=True WHERE id = ?", id)
+
+    # Add user to the session
+    session["user_id"] = user["id"]
+
+    # Move user to the homepage
+    return redirect("/")
+
+  return render_template("confirm.html")
 
 @app.route("/mailing/<mail_address>")
 def mailing(mail_address):
