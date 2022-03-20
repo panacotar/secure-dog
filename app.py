@@ -3,13 +3,14 @@ import os
 import json
 
 from cs50 import SQL
-from flask import Flask, flash, jsonify, redirect, render_template, request, session, get_flashed_messages
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, \
+  get_flashed_messages
 from flask_session import Session
 from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
-  get_time_now_ms
+  get_time_now_ms, login_required
 
 # Configure application
 app = Flask(__name__, instance_relative_config=True)
@@ -36,6 +37,7 @@ Session(app)
 db = SQL("sqlite:///dog.db")
 
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
   confirm_code = get_confirmation_code()
   return render_template("index.html", confirm_code=confirm_code)
@@ -99,7 +101,7 @@ def login():
   msg = get_flashed_messages()
   print(msg)
 
-    # Forget any user_id
+  # Forget any user_id
   session.clear()
 
   if request.method == "POST":
@@ -115,8 +117,8 @@ def login():
     
     # Check if user exists in the DB
     res = db.execute("SELECT * FROM users WHERE email = ?", email)
-    if not len(res):
-      flash("A user with this email does not exists")
+    if len(res) != 1 or not check_password_hash(res[0]["hash"], request.form.get("password")):
+      flash("Email or password invalid")
       return render_template("login.html")
     
     user = res[0]
@@ -132,15 +134,15 @@ def login():
     sql_token = json.dumps(token_data)
     # Save the token in the DB
     db.execute(
-      "UPDATE users SET token=? WHERE id = ?"
+      "UPDATE users SET token=? WHERE id = ?",
         sql_token,
         user["id"]
-      )
+    )
     
     # Send the confirmation code by email
-    mail_confirmation_code(mail, email, confirmation_code)
+    # mail_confirmation_code(mail, email, confirmation_code)
     # Move user to /confirm
-    return redirect("confirm.html", email=user["email"])
+    return render_template("confirm.html", email=user["email"])
 
 
   return render_template("login.html")
@@ -151,13 +153,12 @@ def confirm():
   
     # Validate existence of confirmation code
     code = request.form.get("confirm-code")
+    email = request.form.get("email")
     if not code:
       flash("Code missing")
-      return render_template("confirm.html")
+      return render_template("confirm.html", email=email)
     
     # Fetch user
-    # email = request.form.get("email")
-    email = 'basmiw@gmail.com'
     res = db.execute("SELECT * FROM users WHERE email = ?", email)
 
     # Check if user exists
@@ -179,7 +180,7 @@ def confirm():
     code_expiration = token[1]
 
     # Remove the confirmation code form the DB
-    db.execute("UPDATE users SET token=NULL WHERE id = ?", id)
+    db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
       flash("Sorry the token has expired")
@@ -191,7 +192,7 @@ def confirm():
 
     # If not confirmed, update the confirmed column of the user
     if not user["confirmed"]:
-      db.execute("UPDATE users SET confirmed=True WHERE id = ?", id)
+      db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
 
     # Add user to the session
     session["user_id"] = user["id"]
