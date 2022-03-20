@@ -42,6 +42,16 @@ def index():
   confirm_code = get_confirmation_code()
   return render_template("index.html", confirm_code=confirm_code)
 
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/")
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
   """Register user"""
