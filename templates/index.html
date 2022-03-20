@@ -1,16 +1,10 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html lang="en">
-  <head>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
-      rel="stylesheet"
-    />
-    <link href="/static/styles.css" rel="stylesheet" />
-    <title>Secure dog</title>
-  </head>
-  <body>
-    <h1>Hello world</h1>
-    <p>{{confirm_code}}</p>
-  </body>
-</html>
+{% block title %}
+    Secure Dog
+{% endblock %}
+
+{% block main %}
+  <h1>Hello world</h1>
+  <p>{{confirm_code}}</p>
+{% endblock %}
