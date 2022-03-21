@@ -224,7 +224,7 @@ def confirm():
 def notFound(e):
   return render_template("errors/404.html")
 
-# 500 - Server Error
+# 500 - Internal Server Error
 @app.errorhandler(500)
 def notFound(e):
   return render_template("errors/500.html")
@@ -234,7 +234,7 @@ def notFound(e):
 def notFound(e):
   return render_template("errors/403.html")
 
-# 405 - Forbidden
+# 405 - Method Not Allowed
 @app.errorhandler(405)
 def notFound(e):
   return render_template("errors/405.html")
