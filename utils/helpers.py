@@ -1,6 +1,6 @@
 from random import randint
 import time
-from flask import redirect, session
+from flask import redirect, session, render_template
 from functools import wraps
 from flask_mail import Message
 
@@ -35,6 +35,7 @@ def get_expiration_date_milliseconds():
 def mail_confirmation_code(mail_app, email_address, code):
   msg = Message('Secured Woof', sender = 'securedog@gmail.com', recipients = [str(email_address)])
   nl = '\n'
-  msg.body = f"Confirmation code to authenticate into Secure Dog is:{nl}<strong>{code}</strong>{nl}{nl}Happy browsing!"
+  msg.body = f"Confirmation code to authenticate into Secure Dog is:{nl}{code}{nl}{nl}Happy browsing!"
+  msg.html = render_template('email/confirm_code.html', code=code)
   mail_app.send(msg)
   return True
