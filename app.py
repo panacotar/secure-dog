@@ -61,22 +61,23 @@ def register():
     # Validate presence of data
     if not email:
       flash("Email missing")
-      return render_template("register.html")
+      return redirect(request.url)
     if not username:
-      flash("Username missing")
-      return render_template("register.html")
+      flash("Username missing", "warning")
+      return redirect(request.url)
     if not request.form.get("password"):
-      flash("Password missing")
-      return render_template("register.html")
+      flash("Password missing", "warning")
+      return redirect(request.url)
     if request.form.get("password") != request.form.get("confirmation"):
-      flash("Passwords do not match")
-      return render_template("register.html")
+      flash("Passwords do not match", "warning")
+      return redirect(request.url)
     
     # Check if email exists already
-    existing = db.execute("SELECT * FROM users WHERE email = ?", email)
-    if existing:
-      flash("User already exists, login with this email or choose another one")
-      return render_template("register.html")
+    response = db.execute("SELECT * FROM users WHERE email = ?", email)
+    print(response)
+    if len(response):
+      flash("User already exists, login with this email or choose another one", "warning")
+      return redirect(request.url)
 
     # Generate a hash password
     hash_password = generate_password_hash(request.form.get("password"))
@@ -102,7 +103,7 @@ def register():
     # Send the confirmation code by email
     mail_confirmation_code(mail, email, confirmation_code)
     # Move user to /confirm
-    return redirect("confirm.html", email=email)
+    return render_template("confirm.html", email=email)
   return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -115,21 +116,24 @@ def login():
   session.clear()
 
   if request.method == "POST":
+    #Clear flash messages
+    session.pop('_flashes', None)
+
     # Validate presence of data
     email = request.form.get("email")
     
     if not email:
-      flash("Email missing")
-      return render_template("login.html")
+      flash("Email missing", "warning")
+      return redirect(request.url)
     if not request.form.get("password"):
-      flash("Password missing")
-      return render_template("login.html")
+      flash("Password missing", "warning")
+      return redirect(request.url)
     
     # Check if user exists in the DB
     res = db.execute("SELECT * FROM users WHERE email = ?", email)
     if len(res) != 1 or not check_password_hash(res[0]["hash"], request.form.get("password")):
-      flash("Email or password invalid")
-      return render_template("login.html")
+      flash("Email or password invalid", "warning")
+      return redirect(request.url)
     
     user = res[0]
     # Check the hash password
@@ -150,10 +154,9 @@ def login():
     )
     
     # Send the confirmation code by email
-    # mail_confirmation_code(mail, email, confirmation_code)
+    mail_confirmation_code(mail, email, confirmation_code)
     # Move user to /confirm
     return render_template("confirm.html", email=user["email"])
-
 
   return render_template("login.html")
 

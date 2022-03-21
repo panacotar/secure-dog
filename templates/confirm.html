@@ -6,7 +6,7 @@
 
 {% block main %}
     <form action="/confirm" method="post">
-      <p>We've sent a confirmation code to email to: <strong>{{ email }}</strong></p>
+      <p>We've sent a confirmation code email to: <strong>{{ email }}</strong></p>
         <div class="mb-3">
             <input name="email" type="hidden" value="{{ email }}">
             <input 
