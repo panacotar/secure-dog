@@ -9,7 +9,7 @@ from flask_session import Session
 from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
+from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
   get_time_now_ms, login_required
 
 # Configure application
@@ -160,7 +160,7 @@ def login():
 
   return render_template("login.html")
 
-@app.route("/confirm", methods=["GET", "POST"])
+@app.route("/confirm", methods=["POST"])
 def confirm():
   if request.method == "POST":
   
@@ -194,13 +194,15 @@ def confirm():
 
     # Remove the confirmation code form the DB
     db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
+    
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
-      flash("Sorry the token has expired")
+      flash("Sorry, the token has expired")
       return redirect("/login")
+    
     # Check if token code is the same as the submitted code
     if code != confirm_code:
-      flash("Sorry the confirmation code is wrong")
+      flash("Sorry, the confirmation code is wrong")
       return redirect("/login")
 
     # If not confirmed, update the confirmed column of the user
@@ -214,6 +216,28 @@ def confirm():
     return redirect("/")
 
   return render_template("confirm.html")
+
+# ERROR HANDLING
+
+# 404 - Not Found
+@app.errorhandler(404)
+def notFound(e):
+  return render_template("errors/404.html")
+
+# 500 - Server Error
+@app.errorhandler(500)
+def notFound(e):
+  return render_template("errors/500.html")
+
+# 403 - Forbidden
+@app.errorhandler(403)
+def notFound(e):
+  return render_template("errors/403.html")
+
+# 405 - Forbidden
+@app.errorhandler(405)
+def notFound(e):
+  return render_template("errors/405.html")
 
 @app.route("/mailing/<mail_address>")
 def mailing(mail_address):
