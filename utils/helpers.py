@@ -1,8 +1,11 @@
 from random import randint
+import re
 import time
 from flask import redirect, session, render_template
 from functools import wraps
 from flask_mail import Message
+
+email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'  
 
 def login_required(f):
     """
@@ -39,3 +42,9 @@ def mail_confirmation_code(mail_app, email_address, code):
   msg.html = render_template('email/confirm_code.html', code=code)
   mail_app.send(msg)
   return True
+
+def check_email(email):   
+  if(re.search(email_regex,email)):   
+    return True
+  else:
+    return False
