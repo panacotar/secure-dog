@@ -22,15 +22,15 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark py-0 px-2" id="navbar">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark py-0" id="navbar">
             <!-- <div class="container-fluid"> -->
-              <a class="navbar-brand" href="/">
+            <a class="navbar-brand ms-2" href="/">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="sit down dog logo" id="logo-nav">
-              </a>
-              <span class="text-light fs-3 text" >Secure Dog</span>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-items" aria-controls="navbar-items" aria-expanded="false" aria-label="Toggle navigation">
+            </a>
+            <span class="text-light fs-3 text" >Secure Dog</span>
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-items" aria-controls="navbar-items" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-              </button>
+            </button>
               <div class="collapse navbar-collapse" id="navbar-items">
                 {% if session["user_id"] %}
                     <ul class="navbar-nav ms-auto align-items-center">
