@@ -63,9 +63,14 @@
         </main>
 
         <footer class="mb-3 small text-center text-muted">
-            Woof
+            Woof © <span id="year"></span>
         </footer>
 
+        <script>
+            var yearText = document.getElementById("year");
+            var currentYear = (new Date).getFullYear();
+            yearText.innerHTML = currentYear;
+        </script>
     </body>
 
 </html>
