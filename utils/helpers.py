@@ -1,23 +1,11 @@
 from random import randint
 import re
 import time
-from flask import redirect, session, render_template
-from functools import wraps
+from flask import render_template
+
 from flask_mail import Message
 
 email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'  
-
-def login_required(f):
-    """
-    Decorate routes to require login.
-    https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
-    """
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") is None:
-            return redirect("/login")
-        return f(*args, **kwargs)
-    return decorated_function
 
 def get_confirmation_code():
   code = ""
