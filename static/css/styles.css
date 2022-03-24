@@ -1,0 +1,69 @@
+body {
+  height: 100vh;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+#navbar {
+  height: 60px;
+}
+
+#navbar-items {
+  justify-content: flex-end;
+  z-index: 2;
+  background-color: #212529;
+}
+
+#form-container {
+  width: 350px;
+  height: 320px;
+  margin: auto;
+  /* background-color: pink; */
+}
+
+@media (max-width: 400px) {
+  #form-container {
+    width: 290px;
+  }
+}
+
+#form-card {
+  height: 300px;
+}
+
+#logo-nav {
+  margin-left: 5px;
+  height: 45px;
+}
+
+#section-bg-img {
+  background-image: url("/static/images/hero.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#section-bg-img-filter {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+#hero-form-container {
+  height: 60vh;
+}
