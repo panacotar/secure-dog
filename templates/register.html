@@ -5,19 +5,37 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/register" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text">
+<div id="section-bg-img" >
+    <div id="section-bg-img-filter" ></div>
+</div>
+<div class="container" id="hero-form-container">
+    <div class="row">
+        <div class="col-sm-0 col-md-6" ></div>
+        <div class="col-sm-12 col-md-6">
+            <div class="py-5" id="form-container" >
+                <div class="card">
+                    <div class="card-body d-flex align-items-center justify-content-center" id="form-card">
+                        <!-- FORM -->
+                        <form action="/register" method="post">
+                            <div class="mb-3">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text">
+                            </div>
+                            <div class="mb-3">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control mx-auto w-auto" id="password" name="confirmation" placeholder="Confirm the Password" type="password">
+                            </div>
+                            <button class="btn btn-dark" type="submit">Register</button>
+                        </form>
+                        <!-- FORM -->
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="confirmation" placeholder="Confirm the Password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Register</button>
-    </form>
+    </div>
+</div>
 {% endblock %}
