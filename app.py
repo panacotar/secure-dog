@@ -10,7 +10,9 @@ from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
-  get_time_now_ms, login_required, check_email
+  get_time_now_ms, check_email
+
+from utils.decorators import login_required, unauthenticated_route
 
 # Configure application
 app = Flask(__name__, instance_relative_config=True)
@@ -37,10 +39,17 @@ Session(app)
 db = SQL("sqlite:///dog.db")
 
 @app.route("/", methods=["GET", "POST"])
-@login_required
+@unauthenticated_route
 def index():
   confirm_code = get_confirmation_code()
   return render_template("index.html", confirm_code=confirm_code)
+
+@app.route("/feed", methods=["GET", "POST"])
+@login_required
+def feed():
+  res = db.execute("SELECT username FROM users;")
+  print(f"RES users {res}")
+  return render_template("feed.html", users=res)
 
 @app.route("/logout")
 def logout():
@@ -239,7 +248,7 @@ def confirm():
     session.pop("user_email")
 
     # Move user to the homepage
-    return redirect("/")
+    return redirect("/feed")
   
   # Get user email from the session
   user_email = session["user_email"]

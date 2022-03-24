@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Secure Dog
+{% endblock %}
+
+{% block main %}
+  <h1>Feed</h1>
+  {% for user in users  %}
+    <p>{{ user.username }}</p>
+  {% endfor %}
+{% endblock %}
