@@ -10,7 +10,7 @@ from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
-  get_time_now_ms, login_required
+  get_time_now_ms, login_required, check_email
 
 # Configure application
 app = Flask(__name__, instance_relative_config=True)
@@ -62,12 +62,24 @@ def register():
     if not email:
       flash("Email missing")
       return redirect(request.url)
+
+    # Check if email is valid
+    if not check_email(email):
+      flash("Not a valid email")
+      return redirect(request.url)
+
     if not username:
       flash("Username missing", "warning")
       return redirect(request.url)
+
     if not request.form.get("password"):
       flash("Password missing", "warning")
       return redirect(request.url)
+
+    if len(request.form.get("password")) < 6:
+      flash("Password should be at least 6 characters")
+      return redirect(request.url)
+
     if request.form.get("password") != request.form.get("confirmation"):
       flash("Passwords do not match", "warning")
       return redirect(request.url)
@@ -102,8 +114,14 @@ def register():
     print(f"new user in db: {user}")
     # Send the confirmation code by email
     mail_confirmation_code(mail, email, confirmation_code)
+
+    # Track user email to the session
+    session["user_email"] = email
+
     # Move user to /confirm
-    return render_template("confirm.html", email=email)
+    # return render_template("confirm.html", email=user["email"])
+    return redirect("/confirm")
+
   return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -152,15 +170,20 @@ def login():
         sql_token,
         user["id"]
     )
-    
+
     # Send the confirmation code by email
     mail_confirmation_code(mail, email, confirmation_code)
+
+    # Track user email to the session
+    session["user_email"] = user["email"]
+
     # Move user to /confirm
-    return render_template("confirm.html", email=user["email"])
+    # return render_template("confirm.html", email=user["email"])
+    return redirect("/confirm")
 
   return render_template("login.html")
 
-@app.route("/confirm", methods=["POST"])
+@app.route("/confirm", methods=["GET", "POST"])
 def confirm():
   if request.method == "POST":
   
@@ -194,7 +217,7 @@ def confirm():
 
     # Remove the confirmation code form the DB
     db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
-    
+
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
       flash("Sorry, the token has expired")
@@ -212,10 +235,18 @@ def confirm():
     # Add user to the session
     session["user_id"] = user["id"]
 
+    # Untrack user_email from session
+    session.pop("user_email")
+
     # Move user to the homepage
     return redirect("/")
+  
+  # Get user email from the session
+  user_email = session["user_email"]
 
-  return render_template("confirm.html")
+  print(f"USer email in session {user_email}")
+
+  return render_template("confirm.html", email=user_email)
 
 # ERROR HANDLING
 
