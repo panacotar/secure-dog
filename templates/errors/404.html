@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block main %}
-    <div>
-      <h2>Not Found</h2>
-      <a href="/">Back</a>
+    <div class="mt-5">
+      <img src="{{ url_for('static', filename='images/dog-poop.png') }}" alt="error-dog-pooping" class="mt-4">
+      <h2 class="mt-4">Not Found</h2>
+      <a class="btn btn-dark mt-2" href="/">Back</a>
     </div>
 {% endblock %}
