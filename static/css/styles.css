@@ -1,5 +1,6 @@
 body {
   height: 100vh;
+  max-height: 100vh;
 }
 
 footer {
@@ -18,16 +19,27 @@ footer {
   background-color: #212529;
 }
 
+#main-container {
+  height: 80vh;
+}
+
 #form-container {
   width: 350px;
   height: 320px;
   margin: auto;
 }
 
-@media (max-width: 400px) {
-  #form-container {
-    width: 290px;
-  }
+#header-container {
+  max-width: 350px;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#header-container h1 {
+  font-size: 3rem;
 }
 
 #form-card {
@@ -84,7 +96,8 @@ footer {
 }
 
 .landing-icons-container {
-  margin-top: 40px;
+  margin-top: 20px;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -97,5 +110,28 @@ footer {
 
 .landing-icons {
   width: 50px;
-  height: 50px;
+}
+
+@media (max-width: 400px) {
+  #form-container {
+    width: 290px;
+  }
+}
+
+@media (min-width: 768px) {
+  #header-container h1 {
+    text-align: start;
+  }
+
+  #header-container p {
+    text-align: start;
+  }
+  
+  #header-container ol {
+    padding-left: 15px;
+  }
+
+  .landing-icons {
+    width: 90px;
+  }
 }
