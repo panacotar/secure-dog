@@ -1,5 +1,3 @@
-import os
-
 import json
 
 from cs50 import SQL
@@ -281,11 +279,19 @@ def notFound(e):
 
 @app.route("/mailing/<mail_address>")
 def mailing(mail_address):
-   """Send a template mail"""
-   msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
-   msg.body = "Secure dog email"
-   mail.send(msg)
-   return "Sent"
+  """Send a template mail"""
+  #  mail_confirmation_code(mail, "basmiw@gmail.com", 123456)
+  customer = {
+    "firstName": "Andrew"
+  }
+  invoice = {
+    "url": "http://www.example.com"
+  }
+  # msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
+  # msg.html = render_template('email/return-code.html', customer=customer, invoice=invoice)
+  # msg.body = "email"
+  # mail.send(msg)
+  return "Sent"
 
 
 if __name__ == '__main__':

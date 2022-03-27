@@ -41,7 +41,7 @@ footer {
 
 #logo-nav {
   margin-left: 5px;
-  height: 45px;
+  height: 50px;
 }
 
 #section-bg-img {
@@ -70,4 +70,32 @@ footer {
 
 #hero-form-container {
   height: 60vh;
+}
+
+.steps-list li {
+  margin: 10px 0;
+}
+
+.divider-dots {
+  max-width: 40px;
+  margin: auto;
+  border-top: 10px dotted #212529;
+  background: transparent;
+}
+
+.landing-icons-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.landing-icons-container span {
+  font-size: 2rem;
+}
+
+.landing-icons {
+  width: 50px;
+  height: 50px;
 }
