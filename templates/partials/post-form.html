@@ -2,7 +2,7 @@
 
 <form action="/feed" method="post">
   <div class="mb-3 mt-4">
-      <input autocomplete="off" class="form-control mx-auto" id="url" name="url" placeholder="URL" type="text">
+      <input autocomplete="off" class="form-control mx-auto" id="url" name="url" placeholder="URL" type="text" value={{ url or "" }} >
   </div>
   <div class="mb-3">
       <textarea 
@@ -12,7 +12,7 @@
         placeholder="Any thoughts you wanna share?" 
         rows="3"
         type="text"
-      ></textarea>
+      >{{description or ""}}</textarea>
   </div>
   <button class="btn btn-dark" type="submit">Post now</button>
 </form>
