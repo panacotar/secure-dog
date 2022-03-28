@@ -6,9 +6,10 @@ from flask import Flask, flash, jsonify, redirect, render_template, request, ses
 from flask_session import Session
 from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
+from validator_collection import errors as validator_errors
 
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
-  get_time_now_ms, check_email
+  get_time_now_ms, check_email, check_url
 
 from utils.decorators import login_required, unauthenticated_route
 
@@ -45,6 +46,51 @@ def index():
 @app.route("/feed", methods=["GET", "POST"])
 @login_required
 def feed():
+  """Show posts and create new post"""
+  if request.method == "POST":
+    # Check if an logged user
+    logged_user_id = session["user_id"]
+    if not logged_user_id:
+      flash("User not logged in")
+      return redirect(request.url)
+
+    # Validate Data
+    # Check if URL missing
+    url = request.form.get("url")
+    description = request.form.get("description")
+    if not url:
+      flash("URL is missing")
+      return render_template("feed.html", description=description)
+    
+    # Check if URL is valid
+    try:
+      valid_url = check_url(url)
+    except validator_errors.InvalidURLError:
+      flash("URL not valid")
+      return render_template("feed.html", url=url, description=description)
+
+    # Get the current user
+    res_db = db.execute("SELECT username FROM users WHERE id = ?;", logged_user_id)
+
+    # Error if not found user
+    if len(res_db) != 1:
+      flash("Author user not existing in the DB")
+      return render_template("feed.html", url=url, description=description)
+    
+
+    found_user = res_db[0]
+
+    # Save the post in the DB
+    res = db.execute("INSERT INTO posts (author_id, author_username, photo_URL, description) VALUES (?, ?, ?, ?)",
+        logged_user_id,
+        found_user["username"],
+        valid_url,
+        description
+    )
+
+    # Redirect user to /feed
+    return redirect(request.url)
+
   res = db.execute("SELECT username FROM users;")
   print(f"RES users {res}")
   return render_template("feed.html", posts=res)

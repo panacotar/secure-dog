@@ -16,5 +16,10 @@ CREATE TABLE posts (
   author_username TEXT NOT NULL,
   photo_URL TEXT NOT NULL,
   description TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(author_id) REFERENCES users(id)
 )
+
+-- To rename a table
+ALTER TABLE posts RENAME TO posts_old;
+-- Then it can be created again
