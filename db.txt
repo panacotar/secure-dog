@@ -12,9 +12,9 @@ CREATE TABLE users (
 
 CREATE TABLE posts (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  author_id INTEGER NOT NULL
-  author_username TEXT NOT NULL
-  photo_URL TEXT NOT NULL
-  description
+  author_id INTEGER NOT NULL,
+  author_username TEXT NOT NULL,
+  photo_URL TEXT NOT NULL,
+  description TEXT,
   FOREIGN KEY(author_id) REFERENCES users(id)
 )
