@@ -116,6 +116,10 @@ footer {
   #form-container {
     width: 290px;
   }
+
+  #section-bg-img {
+    background-image: url("/static/images/hero-mobile.jpg");
+  }
 }
 
 @media (min-width: 768px) {
@@ -134,4 +138,21 @@ footer {
   .landing-icons {
     width: 90px;
   }
+}
+
+/* FEED */
+
+#post-form-container {
+  background: #ffc107;
+  margin-bottom: 20px;
+  padding: 30px 10px;
+  border-radius: 3px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+#posts-feed-container {
+  margin: 20px 0;
+  padding: 30px 0;
+  border-radius: 3px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
