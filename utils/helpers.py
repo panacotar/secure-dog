@@ -2,6 +2,7 @@ from random import randint
 import re
 import time
 from flask import render_template
+from validator_collection import validators, checkers
 
 from flask_mail import Message
 
@@ -36,3 +37,8 @@ def check_email(email):
     return True
   else:
     return False
+
+def check_url(url):
+  # Will throw an error if not a valid URL
+  value = validators.url(url)
+  return value
