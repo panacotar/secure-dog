@@ -47,7 +47,7 @@ def index():
 def feed():
   res = db.execute("SELECT username FROM users;")
   print(f"RES users {res}")
-  return render_template("feed.html", users=res)
+  return render_template("feed.html", posts=res)
 
 @app.route("/logout")
 def logout():
@@ -135,7 +135,6 @@ def register():
 def login():
   """Log user in"""
   msg = get_flashed_messages()
-  print(msg)
 
   # Forget any user_id
   session.clear()
