@@ -1,0 +1,14 @@
+<div class="post-unit p-2" >
+  <div class="post-header mb-3 d-flex flex-row align-items-center" >
+    <img src="{{ url_for('static', filename='images/user-avatar.png') }}" alt="user avatar" class="avatar-icon">
+    <span>{{ post.author_username }}</span>
+  </div>
+  
+  <div class="post-body" >
+    <p class="text-start" >{{ post.description }}</p>
+    <img src="{{ post.photo_URL }}" class="post-img" />
+  </div>
+
+</div>
+<hr class="divider-dots my-4" />
+

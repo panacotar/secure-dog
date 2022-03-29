@@ -1,0 +1,7 @@
+<h3>Post feed</h3>
+
+{% for post in posts %}
+  {% with post=post %}
+    {% include "partials/post.html" %}
+  {% endwith %}
+{% endfor %}

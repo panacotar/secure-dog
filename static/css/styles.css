@@ -1,10 +1,10 @@
 body {
-  height: 100vh;
-  max-height: 100vh;
+  height: 100%;
+  max-height: 100%;
 }
 
 footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
 }
@@ -152,7 +152,28 @@ footer {
 
 #posts-feed-container {
   margin: 20px 0;
-  padding: 30px 0;
+  padding: 30px 10px;
   border-radius: 3px;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.post-unit {
+  /* box-shadow: 0 0 20px rgb(0 0 0 / 20%); */
+}
+
+.post-header {
+  gap: 10px;
+}
+
+.post-body {
+
+}
+
+.post-img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+.avatar-icon {
+  width: 40px;
 }
