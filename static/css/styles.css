@@ -161,6 +161,12 @@ footer {
   min-height: 400px;
 }
 
+#tooltip-button {
+  border-radius: 17px;
+  width: 35px;
+  height: 35px;
+}
+
 .post-unit {
   box-shadow: 0 0 20px rgb(0 0 0 / 20%);
   padding: 10px;
