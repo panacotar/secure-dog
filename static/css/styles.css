@@ -142,6 +142,10 @@ footer {
 
 /* FEED */
 
+#feed-container {
+  max-width: 600px;
+}
+
 #post-form-container {
   background: #ffc107;
   margin-bottom: 20px;
@@ -152,13 +156,14 @@ footer {
 
 #posts-feed-container {
   margin: 20px 0;
-  padding: 30px 10px;
+  padding: 30px 0;
   border-radius: 3px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  min-height: 400px;
 }
 
 .post-unit {
-  /* box-shadow: 0 0 20px rgb(0 0 0 / 20%); */
+  box-shadow: 0 0 20px rgb(0 0 0 / 20%);
+  padding: 10px;
 }
 
 .post-header {
@@ -172,8 +177,18 @@ footer {
 .post-img {
   max-width: 100%;
   border-radius: 5px;
+  max-height: 80vh;
 }
 
 .avatar-icon {
   width: 40px;
+}
+
+@media (min-width: 768px) {
+  .post-unit {
+    box-shadow: 0 0 20px rgb(0 0 0 / 20%);
+    background: #e9ecef;
+    padding: 20px !important;
+    border-radius: 3px;
+  }
 }
