@@ -46,13 +46,13 @@ def validate_password(password):
   # one uppercase letter
   
   if len(password) < 6:
-    raise ValueError("Password should be at least 6 characters long")
+    raise ValueError
 
   if not any(char.islower() for char in password):
-    raise ValueError("Password should have at least on lowercase character")
+    raise ValueError
 
   if not any(char.isupper() for char in password):
-    raise ValueError("Password should have at least on uppercase character")
+    raise ValueError
 
 def check_url(url):
   # Will raise an exception if not a valid URL

@@ -47,6 +47,8 @@ def index():
 @login_required
 def feed():
   """Show posts and create new post"""
+  res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
+
   if request.method == "POST":
     # Check if an logged user
     logged_user_id = session["user_id"]
@@ -60,14 +62,14 @@ def feed():
     description = request.form.get("description")
     if not url:
       flash("URL is missing")
-      return render_template("feed.html", description=description)
+      return render_template("feed.html", description=description, posts=res)
     
     # Check if URL is valid
     try:
       valid_url = check_url(url)
     except validator_errors.InvalidURLError:
       flash("URL not valid")
-      return render_template("feed.html", url=url, description=description)
+      return render_template("feed.html", url=url, description=description, posts=res)
 
     # Get the current user
     res_db = db.execute("SELECT username FROM users WHERE id = ?;", logged_user_id)
@@ -75,7 +77,7 @@ def feed():
     # Error if not found user
     if len(res_db) != 1:
       flash("Author user not existing in the DB")
-      return render_template("feed.html", url=url, description=description)
+      return render_template("feed.html", url=url, description=description, posts=res)
     
 
     found_user = res_db[0]
@@ -91,8 +93,6 @@ def feed():
     # Redirect user to /feed
     return redirect(request.url)
 
-  res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
-  print(f"RES posts {res}")
   return render_template("feed.html", posts=res)
 
 @app.route("/logout")
@@ -108,9 +108,7 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
   """Register user"""
-  if request.method == "POST":
-    return redirect(request.url)
-    
+  if request.method == "POST":    
     email = request.form.get("email")
     username = request.form.get("username")
     # Validate presence of data
@@ -136,7 +134,7 @@ def register():
       validate_password(request.form.get("password"))
     except ValueError as error:
       print(f"error {error}")
-      flash(error)
+      flash("Password must contain at least: 6 characters, including lower/uppercase characters")
       return redirect(request.url)
 
     if request.form.get("password") != request.form.get("confirmation"):

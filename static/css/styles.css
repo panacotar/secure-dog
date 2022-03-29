@@ -19,9 +19,16 @@ footer {
   background-color: #212529;
 }
 
+#logo-nav {
+  margin-left: 5px;
+  height: 50px;
+}
+
 #main-container {
   height: 80vh;
 }
+
+/* AUTH */
 
 #form-container {
   width: 350px;
@@ -51,9 +58,8 @@ footer {
   height: 230px;
 }
 
-#logo-nav {
-  margin-left: 5px;
-  height: 50px;
+#submit-btn {
+  min-width: 85px;
 }
 
 #section-bg-img {
