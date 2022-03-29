@@ -9,7 +9,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from validator_collection import errors as validator_errors
 
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
-  get_time_now_ms, check_email, check_url
+  get_time_now_ms, check_email, check_url, validate_password
 
 from utils.decorators import login_required, unauthenticated_route
 
@@ -109,6 +109,8 @@ def logout():
 def register():
   """Register user"""
   if request.method == "POST":
+    return redirect(request.url)
+    
     email = request.form.get("email")
     username = request.form.get("username")
     # Validate presence of data
@@ -129,8 +131,12 @@ def register():
       flash("Password missing", "warning")
       return redirect(request.url)
 
-    if len(request.form.get("password")) < 6:
-      flash("Password should be at least 6 characters")
+    # Validate password
+    try:
+      validate_password(request.form.get("password"))
+    except ValueError as error:
+      print(f"error {error}")
+      flash(error)
       return redirect(request.url)
 
     if request.form.get("password") != request.form.get("confirmation"):

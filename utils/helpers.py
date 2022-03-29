@@ -38,7 +38,23 @@ def check_email(email):
   else:
     return False
 
+def validate_password(password):
+  # Will raise an exception if not valid
+  # The password should have at least:
+  # six characters
+  # one lowercase letter
+  # one uppercase letter
+  
+  if len(password) < 6:
+    raise ValueError("Password should be at least 6 characters long")
+
+  if not any(char.islower() for char in password):
+    raise ValueError("Password should have at least on lowercase character")
+
+  if not any(char.isupper() for char in password):
+    raise ValueError("Password should have at least on uppercase character")
+
 def check_url(url):
-  # Will throw an error if not a valid URL
+  # Will raise an exception if not a valid URL
   value = validators.url(url)
   return value
