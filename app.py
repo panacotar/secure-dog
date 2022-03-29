@@ -91,7 +91,7 @@ def feed():
     # Redirect user to /feed
     return redirect(request.url)
 
-  res = db.execute("SELECT * FROM posts;")
+  res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
   print(f"RES posts {res}")
   return render_template("feed.html", posts=res)
 
