@@ -114,39 +114,42 @@ def register():
     # Validate presence of data
     if not email:
       flash("Email missing")
-      return redirect(request.url)
+      # return redirect(request.url)
+      return render_template("register.html", username=username)
 
+    print(email)
     # Check if email is valid
     if not check_email(email):
       flash("Not a valid email")
-      return redirect(request.url)
+      return render_template("register.html", email=email, username=username)
 
     if not username:
       flash("Username missing", "warning")
-      return redirect(request.url)
+      return render_template("register.html", email=email)
+
 
     if not request.form.get("password"):
       flash("Password missing", "warning")
-      return redirect(request.url)
+      return render_template("register.html", email=email, username=username)
 
     # Validate password
     try:
       validate_password(request.form.get("password"))
     except ValueError as error:
       print(f"error {error}")
-      flash("Password must contain at least: 6 characters, including lower/uppercase characters")
-      return redirect(request.url)
+      flash("Password must contain at least 6 characters, including lower/uppercase characters")
+      return render_template("register.html", email=email, username=username)
 
     if request.form.get("password") != request.form.get("confirmation"):
       flash("Passwords do not match", "warning")
-      return redirect(request.url)
+      return render_template("register.html", email=email, username=username)
     
     # Check if email exists already
     response = db.execute("SELECT * FROM users WHERE email = ?", email)
     print(response)
     if len(response):
       flash("User already exists, login with this email or choose another one", "warning")
-      return redirect(request.url)
+      return render_template("register.html", email=email, username=username)
 
     # Generate a hash password
     hash_password = generate_password_hash(request.form.get("password"))
@@ -200,15 +203,16 @@ def login():
     if not email:
       flash("Email missing", "warning")
       return redirect(request.url)
+
     if not request.form.get("password"):
       flash("Password missing", "warning")
-      return redirect(request.url)
+      return render_template("login.html", email=email)
     
     # Check if user exists in the DB
     res = db.execute("SELECT * FROM users WHERE email = ?", email)
     if len(res) != 1 or not check_password_hash(res[0]["hash"], request.form.get("password")):
       flash("Email or password invalid", "warning")
-      return redirect(request.url)
+      return render_template("login.html", email=email)
     
     user = res[0]
     # Check the hash password

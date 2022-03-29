@@ -18,13 +18,22 @@
                         <!-- FORM -->
                         <form action="/register" method="post" id="form">
                             <div class="mb-3">
-                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" required>
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" value={{ email or "" }} >
                             </div>
                             <div class="mb-3">
-                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" value={{ username or "" }}>
                             </div>
                             <div class="mb-3">
-                                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required >
+                                <input 
+                                    class="form-control mx-auto w-auto" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Password" 
+                                    type="password" 
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{6,}$"
+                                    title="Password must contain at least 6 characters, including lower/uppercase characters"
+                                    required 
+                                >
                             </div>
                             <div class="mb-3">
                                 <input class="form-control mx-auto w-auto" id="password" name="confirmation" placeholder="Confirm the Password" type="password" required>
