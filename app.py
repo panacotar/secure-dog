@@ -91,8 +91,8 @@ def feed():
     # Redirect user to /feed
     return redirect(request.url)
 
-  res = db.execute("SELECT username FROM users;")
-  print(f"RES users {res}")
+  res = db.execute("SELECT * FROM posts;")
+  print(f"RES posts {res}")
   return render_template("feed.html", posts=res)
 
 @app.route("/logout")
@@ -171,8 +171,9 @@ def register():
     # Track user email to the session
     session["user_email"] = email
 
+    flash("Account created", "success")
+
     # Move user to /confirm
-    # return render_template("confirm.html", email=user["email"])
     return redirect("/confirm")
 
   return render_template("register.html")
@@ -230,7 +231,6 @@ def login():
     session["user_email"] = user["email"]
 
     # Move user to /confirm
-    # return render_template("confirm.html", email=user["email"])
     return redirect("/confirm")
 
   return render_template("login.html")
@@ -326,16 +326,11 @@ def notFound(e):
 def mailing(mail_address):
   """Send a template mail"""
   #  mail_confirmation_code(mail, "basmiw@gmail.com", 123456)
-  customer = {
-    "firstName": "Andrew"
-  }
-  invoice = {
-    "url": "http://www.example.com"
-  }
-  # msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
-  # msg.html = render_template('email/return-code.html', customer=customer, invoice=invoice)
-  # msg.body = "email"
-  # mail.send(msg)
+  code = 123456
+  msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
+  msg.html = render_template('email/confirm_code.html', code=code)
+  msg.body = "email"
+  mail.send(msg)
   return "Sent"
 
 
