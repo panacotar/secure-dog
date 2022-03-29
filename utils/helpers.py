@@ -6,7 +6,7 @@ from validator_collection import validators, checkers
 
 from flask_mail import Message
 
-email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'  
+email_regex = '^[a-z0-9]+[\._]?[a-z0-9\+\S]+[@]\w+[.]\w{2,3}$'  
 
 def get_confirmation_code():
   code = ""
