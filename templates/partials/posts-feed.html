@@ -1,7 +1,11 @@
-<h4>The juciy part</h4>
 
-{% for post in posts %}
-  {% with post=post %}
-    {% include "partials/post.html" %}
-  {% endwith %}
-{% endfor %}
+{% if posts %}
+  <h4>The juciy part</h4>
+  {% for post in posts %}
+    {% with post=post %}
+      {% include "partials/post.html" %}
+    {% endwith %}
+  {% endfor %}
+{% else %}
+  <h4>No posts to show</h4>
+{% endif %}
