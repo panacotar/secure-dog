@@ -1,18 +1,40 @@
 <h3>Post animals with glasses</h3>
 
 <form action="/feed" method="post">
-  <div class="mb-3 mt-4">
-      <input autocomplete="off" class="form-control mx-auto" id="url" name="url" placeholder="URL" type="text" value={{ url or "" }} >
+  <div class="input-group mb-3 mt-4">
+    <input 
+      autocomplete="off" 
+      class="form-control mx-auto" 
+      id="url" 
+      name="url"
+      placeholder="URL" 
+      type="text" 
+      value={{ url or "" }}
+    >
+    <span class="input-group-text" id="basic-addon2">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        id="tooltip-button" 
+        data-bs-toggle="popover" 
+        title="Popover title" 
+        data-bs-html="true"
+        data-bs-content="{% include 'partials/popover-info.html' %}"
+        >
+        ?
+      </button>
+    </span>
   </div>
   <div class="mb-3">
-      <textarea 
-        class="form-control mx-auto" 
-        id="description" 
-        name="description" 
-        placeholder="Any thoughts you wanna share?" 
-        rows="3"
-        type="text"
-      >{{description or ""}}</textarea>
+    <textarea
+      class="form-control mx-auto"
+      id="description"
+      name="description"
+      placeholder="Any thoughts you wanna share?"
+      rows="3"
+      type="text"
+    >{{description or ""}}</textarea
+    >
   </div>
   <button class="btn btn-dark" type="submit">Post now</button>
 </form>
