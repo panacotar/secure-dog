@@ -1,6 +1,6 @@
 <h3>Post animals with glasses</h3>
 
-<form action="/feed" method="post" id="form">
+<form action="/feed" method="post" id="form" onsubmit="event.preventDefault(); checkImage();">
   <div class="input-group mb-3 mt-4">
     <input 
       autocomplete="off" 
@@ -26,6 +26,11 @@
       </button>
     </span>
   </div>
+
+  <div class="my-3" >
+    <span id="helper-text-img-url" ></span>
+  </div>
+
   <div class="mb-3">
     <textarea
       class="form-control mx-auto"
@@ -34,9 +39,7 @@
       placeholder="Any thoughts you wanna share?"
       rows="3"
       type="text"
-      required
-    >{{description or ""}}</textarea
-    >
+    >{{description or ""}}</textarea>
   </div>
   <button class="btn btn-dark" type="submit" id="submit-btn">Post now</button>
 </form>

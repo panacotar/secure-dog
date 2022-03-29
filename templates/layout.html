@@ -68,28 +68,58 @@
             Woof © <span id="year"></span>
         </footer>
 
-        <script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script type="text/javascript">
             // Loading spinner on submit buttons
             var form = document.getElementById("form");
             var btnSubmit = document.getElementById("submit-btn");
-        
             form.addEventListener("submit", function() {
                 btnSubmit.setAttribute("disabled", "")
                 btnSubmit.innerHTML = "<i class='fa fa-spinner fa-spin'></i>"
             })
-        </script>
-        <script>
+
+            // Check if image URL is valid before submitting
+            var checkImage = function(){
+                // Get url input value
+                var url = document.getElementById("url").value;
+                // Get form element
+                // var form =  document.getElementsByClassName("posts-form")[0]
+                var form =  document.getElementById("form")
+                // Create a test image
+                var img = document.createElement("IMG");
+                // Remove any possible previous messages
+                var spanHelper = document.getElementById("helper-text-img-url");
+                spanHelper.innerHTML = "";
+                img.src = url;
+                img.onerror = function(){
+                    // Image URL invalid
+                    console.log("file with "+url+" invalid");
+                    // Show error message
+                    spanHelper.innerHTML = "Not a valid image URL, make sure to right click on the image and select 'Copy Image Address'";
+
+                    // Make the button available again
+                    var btnSubmit = document.getElementById("submit-btn");
+                    btnSubmit.removeAttribute("disabled");
+                    btnSubmit.innerHTML = "Post now";
+
+                };
+                img.onload = function(){
+                    // Image URL valid, submit form
+                    console.log("file with "+url+" valid");
+                    console.log(form)
+                    form.submit()
+                };
+            };
+
             // Get current year
             var yearText = document.getElementById("year");
             var currentYear = (new Date).getFullYear();
             yearText.innerHTML = currentYear;
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-        <script>
+
             // Popover init
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
             var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
+                return new bootstrap.Popover(popoverTriggerEl)
             })
         </script>
     </body>
