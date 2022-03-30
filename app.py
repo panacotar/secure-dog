@@ -43,6 +43,10 @@ def index():
   confirm_code = get_confirmation_code()
   return render_template("index.html", confirm_code=confirm_code)
 
+@app.route("/about", methods=["GET"])
+def about():
+  return render_template("about.html")
+
 @app.route("/feed", methods=["GET", "POST"])
 @login_required
 def feed():

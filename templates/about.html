@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Secure Dog
+{% endblock %}
+
+{% block main %}
+<div class="container" id="about-container">
+  <div class="mb-5">
+    <p>Secure Dog is an application which uses the Two Factor Authentication method to authenticate its users. 
+      Here, users can create an account and submit their favorite photos of animals with glasses. <br />
+      Even though this is dog themed, any photos of animals are welcomed as long as they wear glasses.
+    </p>
+
+    <p>I chose this theme because I love <strong>dogs</strong> and I feel impartial about (sun)glasses, unless they're on
+      animals, then I love <strong>(sun)glasses</strong> as well.</p>
+
+    <p>
+      Secure Dog is my final project part of the
+      <a target='_blank' rel='noopener noreferrer' href="https://pll.harvard.edu/course/cs50-introduction-computer-science?delta=0">
+        CS50: Introduction to Computer Science
+      </a>course. Big thanks to all the fantastic teachers and staff putting together this course.
+    </p>
+
+    <p>Enjoy!</p>
+    <p></p>
+    <p>
+      Darius <br /> 
+      <a target='_blank' rel='noopener noreferrer' href="https://github.com/DariusPirvulescu">Github</a> | 
+      <a target='_blank' rel='noopener noreferrer' href="https://www.linkedin.com/in/darius-pirvulescu/">LinkedIn</a>
+    </p>
+  </div>
+  
+  <h3>Login instructions</h3>
+  <ol class="steps-list text-start" >
+    <li>Register or login with email and password</li>
+    <li>Get your <strong>confirmation code</strong> by email</li>
+    <li>Use the <strong>code</strong> to confirm your identity</li>
+    <li>Get to the juicy part</li>
+  </ol>
+
+  <h3>Post a photo</h3>
+  <ol>
+    <li>Search for an <a target='_blank' rel='noopener noreferrer' href='https://www.google.com/search?q=dog+with+glasses&sxsrf=APq-WBt0xXLYQv3wjhvdpkXttW5SUw1lBQ:1648543180107&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjxqpb19er2AhWd8bsIHZjYBKgQ_AUoAXoECAEQAw&biw=1366&bih=663&dpr=1#imgrc=CeVnUUczW2Nz5M'>image</a></li>
+    <li>Right click on the image -> Press 'Copy Image Address'</li>
+    <li>Copy link in the "Photo URL" field</li>
+  </ol>
+
+  <h3>Technologies</h3>
+  <p>
+    Written in Python3 and built with Flask web framework, HTML templating was done using Jinja template engine. 
+    As a first version, it utilizes SQLite3 as the Database.
+  </p>
+  
+  <div>
+    <h3>Acknowledgement</h3>
+
+    <p><a target="_blank" href="https://icons8.com/icon/2TcinN40k0mq/dog-heart">Dog Heart</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
+    <p><a href="https://www.flaticon.com/free-icons/dog" title="dog icons">Dog icons created by deemakdaksina - Flaticon</a></p>
+    Photo by Ilargian Faus from Pexels
+    <p><a target="_blank" href="https://icons8.com/icon/bfOZX9RnB5dT/dog-pooping">Dog Pooping</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
+    <p><a target="_blank" href="https://icons8.com/icon/6UbwHiD0EEmu/glasses">Glasses</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
+    <p><a target="_blank" href="https://icons8.com/icon/yTfMKzjruTXJ/love">Love</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
+    <p><a href="https://www.flaticon.com/free-icons/woman" title="woman icons">Woman icons created by Stockio - Flaticon</a> </p>
+  </div>
+  <div class="d-flex justify-content-center mt-4" >
+    <img src="https://c.tenor.com/EUotHLQy7b4AAAAM/cool-dog.gif" class="w-200 about-gif" />
+  </div>
+</div>
+
+{% endblock %}

@@ -88,3 +88,15 @@ The errors currently handled are:
 - 405 - Method Not Allowed
 - 500 - Internal Server Error
 For each of them, a different HTML template was created under the `templates/errors/` directory.
+
+### Some things learned
+- Raise and handle exceptions in Python
+- Create a db + tables
+- Use the 'include' statement from Jinja
+-  
+
+
+### Future features time
+- Upload image and save them to the DB
+- Allow users to upload an avatar photo
+- 
