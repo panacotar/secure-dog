@@ -5,3 +5,4 @@ requests
 Flask-Mail
 flask_mail
 validator-collection
+dotenv
