@@ -1,1 +1,1 @@
-web: gunicorn app:secure-dog
+web: gunicorn app:app
