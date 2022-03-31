@@ -12,16 +12,23 @@ from utils.helpers import get_confirmation_code, get_expiration_date_millisecond
   get_time_now_ms, check_email, check_url, validate_password
 
 from utils.decorators import login_required, unauthenticated_route
+from dotenv import load_dotenv
+# Load environment variables from .env
+load_dotenv() 
+
+import os
+
 
 # Configure application
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__)
 
 # Configure Falsk Mail
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-app.config.from_pyfile('config.py')
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 
 # Initiate mail from Flask Mail
 mail = Mail(app)
@@ -334,16 +341,16 @@ def notFound(e):
 def notFound(e):
   return render_template("errors/405.html")
 
-@app.route("/mailing/<mail_address>")
-def mailing(mail_address):
-  """Send a template mail"""
-  #  mail_confirmation_code(mail, "basmiw@gmail.com", 123456)
-  code = 123456
-  msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
-  msg.html = render_template('email/confirm_code.html', code=code)
-  msg.body = "email"
-  mail.send(msg)
-  return "Sent"
+# @app.route("/mailing/<mail_address>")
+# def mailing(mail_address):
+#   """Send a template mail"""
+#   #  mail_confirmation_code(mail, "basmiw@gmail.com", 123456)
+#   code = 123456
+#   msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
+#   msg.html = render_template('email/confirm_code.html', code=code)
+#   msg.body = "email"
+#   mail.send(msg)
+#   return "Sent"
 
 
 if __name__ == '__main__':
