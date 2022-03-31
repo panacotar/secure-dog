@@ -113,4 +113,5 @@ For each of them, a different HTML template was created under the `templates/err
 ### Future features time
 - Upload image and save them to the DB
 - Allow users to upload an avatar photo
--
+- Forget password path
+- 

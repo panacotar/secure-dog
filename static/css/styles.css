@@ -1,6 +1,7 @@
 body {
   height: 100%;
   max-height: 100%;
+  font-family: Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
 }
 
 footer {
@@ -19,6 +20,10 @@ footer {
   background-color: #212529;
 }
 
+.navbar-brand {
+  gap: 10px;
+}
+
 #logo-nav {
   margin-left: 5px;
   height: 50px;
@@ -28,6 +33,18 @@ footer {
   height: 80vh;
 }
 
+.no-text-highlight {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none; 
+  -khtml-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none;
+}
+
+.pre {
+  white-space: break-spaces;
+}
 /* AUTH */
 
 #form-container {
@@ -183,7 +200,6 @@ footer {
 }
 
 .post-body {
-
 }
 
 .post-img {
@@ -211,6 +227,7 @@ footer {
   max-width: 500px;
   text-align: justify;
   padding: 0 20px 80px 20px;
+  margin: auto;
 }
 
 .about-gif {

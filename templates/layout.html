@@ -13,7 +13,11 @@
         <!-- Font-awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-        <!-- https://favicon.io/emoji-favicons/money-bag/ -->
+        <!-- Google font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
         <link href="/static/images/favicon.ico" rel="icon">
         
         <link href="/static/css/styles.css" rel="stylesheet">
@@ -26,16 +30,17 @@
     <body>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark py-0" id="navbar">
             <!-- <div class="container-fluid"> -->
-            <a class="navbar-brand ms-2" href="/">
+            <a class="navbar-brand ms-2 d-flex align-items-center" href="/">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="sit down dog logo" id="logo-nav">
+                <span class="text-light fs-3 text no-text-highlight" >Secure Dog</span>
             </a>
-            <span class="text-light fs-3 text" >Secure Dog</span>
             <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-items" aria-controls="navbar-items" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
               <div class="collapse navbar-collapse" id="navbar-items">
                 {% if session["user_id"] %}
                     <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item"><a class="nav-link active" href="/about">About</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                     </ul>
                 {% else %}

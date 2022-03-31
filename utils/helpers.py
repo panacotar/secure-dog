@@ -32,6 +32,12 @@ def mail_confirmation_code(mail_app, email_address, code):
   mail_app.send(msg)
   return True
 
+def mail_analytics(mail_app, post_description):
+  msg = Message('New post on secure-dog', sender = 'securedog@gmail.com', recipients = ["securedogapp@gmail.com"])
+  msg.body = f"A new post was created {post_description} \n\nhttps://secure-dog.herokuapp.com/feed"
+  mail_app.send(msg)
+  return True
+
 def check_email(email):   
   if(re.search(email_regex,email)):   
     return True

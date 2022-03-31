@@ -1,4 +1,9 @@
+from dotenv import load_dotenv
+# Load environment variables from .env
+load_dotenv() 
+
 import json
+import os
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, \
@@ -9,14 +14,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from validator_collection import errors as validator_errors
 
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
-  get_time_now_ms, check_email, check_url, validate_password
+  get_time_now_ms, check_email, check_url, validate_password, mail_analytics
 
 from utils.decorators import login_required, unauthenticated_route
-from dotenv import load_dotenv
-# Load environment variables from .env
-load_dotenv() 
-
-import os
 
 
 # Configure application
@@ -100,6 +100,8 @@ def feed():
         valid_url,
         description
     )
+
+    mail_analytics(mail, description)
 
     # Redirect user to /feed
     return redirect(request.url)
@@ -274,7 +276,6 @@ def confirm():
       return redirect("/login")
 
     user = res[0]
-    print(f"res get user {user}")
 
     # Check if user has an active token
     if not user["token"]:
