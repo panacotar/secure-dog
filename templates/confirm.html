@@ -10,10 +10,10 @@
     <div class="card">
       <div class="card-body d-flex align-items-center justify-content-center confirm-form" id="form-card">
         <form action="/confirm" method="post">
-          <p>We've sent a confirmation code email to <strong>{{ email }}</strong></p>
+          <p>We've sent a confirmation code email to <strong>{{ session["user_email"] }}</strong></p>
             <div class="mb-3">
-                <input name="email" type="hidden" value="{{ email }}">
-                <input 
+                <input name="email" type="hidden" value="{{ session['user_email'] }}">
+                <input
                   autocomplete="off" 
                   autofocus class="form-control mx-auto w-auto" 
                   id="confirm-code" 

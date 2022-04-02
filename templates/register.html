@@ -18,7 +18,7 @@
                         <!-- FORM -->
                         <form action="/register" method="post" id="form">
                             <div class="mb-3">
-                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" required value={{ email or "" }}>
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" required value={{ session["user_email"] or "" }}>
                             </div>
                             <div class="mb-3">
                                 <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required value={{ username or "" }}>
