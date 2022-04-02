@@ -1,3 +1,4 @@
+from ast import Try
 from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv() 
@@ -124,17 +125,23 @@ def register():
   if request.method == "POST":    
     email = request.form.get("email")
     username = request.form.get("username")
+
+    # Track the user email in the session
+    session["user_email"] = email
+  
     # Validate presence of data
     if not email:
       flash("Email missing")
       # return redirect(request.url)
-      return render_template("register.html", username=username)
+      return redirect(request.url)
+      # return render_template("register.html", username=username)
 
     print(email)
     # Check if email is valid
     if not check_email(email):
       flash("Not a valid email")
-      return render_template("register.html", email=email, username=username)
+      return redirect(request.url)
+      # return render_template("register.html", email=email, username=username)
 
     if not username:
       flash("Username missing", "warning")
@@ -143,7 +150,8 @@ def register():
 
     if not request.form.get("password"):
       flash("Password missing", "warning")
-      return render_template("register.html", email=email, username=username)
+      return redirect(request.url)
+      # return render_template("register.html", email=email, username=username)
 
     # Validate password
     try:
@@ -151,18 +159,21 @@ def register():
     except ValueError as error:
       print(f"error {error}")
       flash("Password must contain at least 6 characters, including lower/uppercase characters")
-      return render_template("register.html", email=email, username=username)
+      return redirect(request.url)
+      # return render_template("register.html", email=email, username=username)
 
     if request.form.get("password") != request.form.get("confirmation"):
       flash("Passwords do not match", "warning")
-      return render_template("register.html", email=email, username=username)
+      return redirect(request.url)
+      # return render_template("register.html", email=email, username=username)
     
     # Check if email exists already
     response = db.execute("SELECT * FROM users WHERE email = ?", email)
     print(response)
     if len(response):
       flash("User already exists, login with this email or choose another one", "warning")
-      return render_template("register.html", email=email, username=username)
+      return redirect(request.url)
+      # return render_template("register.html", email=email, username=username)
 
     # Generate a hash password
     hash_password = generate_password_hash(request.form.get("password"))
@@ -204,28 +215,38 @@ def login():
   msg = get_flashed_messages()
 
   # Forget any user_id
-  session.clear()
+  # session.clear()
 
+  try:
+    print("SESISON EMAIL")
+    # print(session["user_email"])
+    print(session)
+  except:
+    print("No session email")
+  
   if request.method == "POST":
     #Clear flash messages
     session.pop('_flashes', None)
 
     # Validate presence of data
     email = request.form.get("email")
-    
+
+    # Track the user email in the session
+    session["user_email"] = email
+
     if not email:
       flash("Email missing", "warning")
       return redirect(request.url)
 
     if not request.form.get("password"):
       flash("Password missing", "warning")
-      return render_template("login.html", email=email)
+      return redirect(request.url)
     
     # Check if user exists in the DB
     res = db.execute("SELECT * FROM users WHERE email = ?", email)
     if len(res) != 1 or not check_password_hash(res[0]["hash"], request.form.get("password")):
       flash("Email or password invalid", "warning")
-      return render_template("login.html", email=email)
+      return redirect(request.url)
     
     user = res[0]
     # Check the hash password
@@ -249,7 +270,7 @@ def login():
     mail_confirmation_code(mail, email, confirmation_code)
 
     # Track user email to the session
-    session["user_email"] = user["email"]
+    # session["user_email"] = user["email"]
 
     # Move user to /confirm
     return redirect("/confirm")
@@ -318,7 +339,7 @@ def confirm():
 
   print(f"USer email in session {user_email}")
 
-  return render_template("confirm.html", email=user_email)
+  return render_template("confirm.html")
 
 # ERROR HANDLING
 
