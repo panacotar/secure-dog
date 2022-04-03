@@ -48,8 +48,7 @@ db = SQL("sqlite:///dog.db")
 @app.route("/", methods=["GET", "POST"])
 @unauthenticated_route
 def index():
-  confirm_code = get_confirmation_code()
-  return render_template("index.html", confirm_code=confirm_code)
+  return render_template("index.html")
 
 @app.route("/about", methods=["GET"])
 def about():
