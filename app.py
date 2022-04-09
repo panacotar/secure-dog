@@ -1,10 +1,13 @@
 from ast import Try
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, null
 # Load environment variables from .env
 load_dotenv() 
 
 import json
 import os
+import datetime
+import psycopg2
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, \
@@ -18,7 +21,7 @@ from utils.helpers import get_confirmation_code, get_expiration_date_millisecond
   get_time_now_ms, check_email, check_url, validate_password, mail_analytics
 
 from utils.decorators import login_required, unauthenticated_route
-
+from flask_sqlalchemy import SQLAlchemy
 
 # Configure application
 app = Flask(__name__)
@@ -42,8 +45,67 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Configure the DB
+# app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
+# db = create_engine(os.getenv("DATABASE_URI"), strategy='threadlocal')
+con = psycopg2.connect(os.getenv("DATABASE_CONNECT_PARAMS"))
+print(con)
+
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///dog.db")
+# db = SQL("sqlite:///dog.db")
+
+# db = SQLAlchemy(app)
+
+# Create the User model
+# class User(db.Model):
+#   __tablename__='users'
+#   id=db.Column(db.Integer,primary_key=True)
+#   email=db.Column(db.String(320)), 
+#   username=db.Column(db.String(40))
+#   hash=db.Column(db.String())
+#   profile_photo_url=db.Column(db.String(), default="") 
+#   created_at=db.Column(db.DateTime, default=datetime.datetime.now) 
+#   bio=db.Column(db.String()) 
+#   confirmed=db.Column(db.Boolean, default=False)
+#   token=db.Column(db.String())
+
+#   def __init__(self,email,username,hash,token, profile_photo, confirmed):
+#     self.email=email
+#     self.username=username
+#     self.hash=hash
+#     self.token=token
+#     self.profile_photo_url=profile_photo
+#     self.confirmed=confirmed
+
+@app.route("/db", methods=["GET", "POST"])
+def cdb():
+  cur = con.cursor()
+
+  # aa = cur.execute("CREATE TABLE posts (\
+  #   id SERIAL PRIMARY KEY NOT NULL, \
+  #   author_id INTEGER NOT NULL, \
+  #   author_username TEXT NOT NULL, \
+  #   photo_URL TEXT NOT NULL, \
+  #   description TEXT, \
+  #   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+  #   CONSTRAINT fk_author \
+  #     FOREIGN KEY(author_id) \
+	#       REFERENCES users(id) \
+  #   );"
+  # )
+
+  ##
+  # FIND WHEN TO CLOSE AND OPEN THE CONNECTION
+  # WHICH ARE THE BEST PRACTICES?
+  ##
+
+  # con.commit()
+  print("RES execute")
+  cur.close()
+  con.close()
+
+  return "yes"
+
 
 @app.route("/", methods=["GET", "POST"])
 @unauthenticated_route
@@ -168,6 +230,9 @@ def register():
     
     # Check if email exists already
     response = db.execute("SELECT * FROM users WHERE email = ?", email)
+    # response = db.session.query(User).filter_by(email=email)
+
+    print("RESPONSE QUERY")
     print(response)
     if len(response):
       flash("User already exists, login with this email or choose another one", "warning")
@@ -185,14 +250,21 @@ def register():
 
     token_data = [confirmation_code, code_expiration]
     sql_token = json.dumps(token_data)
+
+    # Create user instance
+    user = User(email=email, hash=hash_password, username=username, token=sql_token)
+
     # Save user in the DB
-    user = db.execute(
-      "INSERT INTO users (email, username, hash, token) VALUES(?, ?, ?, ?)",
-        email,
-        username,
-        hash_password,
-        sql_token
-      )
+    db.session.add(user)
+    db.session.commit()
+
+    # user = db.execute(
+    #   "INSERT INTO users (email, username, hash, token) VALUES(?, ?, ?, ?)",
+    #     email,
+    #     username,
+    #     hash_password,
+    #     sql_token
+    #   )
     
     print(f"new user in db: {user}")
     # Send the confirmation code by email
@@ -217,6 +289,10 @@ def login():
   # session.clear()
 
   try:
+    mail = session["user_email"]
+    res = db.session.query(User).filter_by(email=mail)
+
+    print(f"res user {res}")
     print("SESISON EMAIL")
     # print(session["user_email"])
     print(session)
@@ -288,7 +364,10 @@ def confirm():
       return render_template("confirm.html", email=email)
     
     # Fetch user
-    res = db.execute("SELECT * FROM users WHERE email = ?", email)
+    # res = db.execute("SELECT * FROM users WHERE email = ?", email)
+    res = db.query(User).filter_by(email=email)
+
+    print(f"res user {res}")
 
     # Check if user exists
     if not len(res):
@@ -309,6 +388,11 @@ def confirm():
 
     # Remove the confirmation code form the DB
     db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
+    # user = User(token=null)
+
+    # Save user in the DB
+    # db.session.add(user)
+    # db.session.commit()
 
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
