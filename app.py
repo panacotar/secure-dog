@@ -8,6 +8,7 @@ import json
 import os
 import datetime
 import psycopg2
+import psycopg2.extras
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, \
@@ -19,6 +20,8 @@ from validator_collection import errors as validator_errors
 
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
   get_time_now_ms, check_email, check_url, validate_password, mail_analytics
+
+from utils.db import get_user_by_email, register_user, update_user, connect_db, get_posts
 
 from utils.decorators import login_required, unauthenticated_route
 from flask_sqlalchemy import SQLAlchemy
@@ -45,62 +48,19 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Configure the DB
-# app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
-# db = create_engine(os.getenv("DATABASE_URI"), strategy='threadlocal')
-con = psycopg2.connect(os.getenv("DATABASE_CONNECT_PARAMS"))
-print(con)
-
 # Configure CS50 Library to use SQLite database
 # db = SQL("sqlite:///dog.db")
 
-# db = SQLAlchemy(app)
-
-# Create the User model
-# class User(db.Model):
-#   __tablename__='users'
-#   id=db.Column(db.Integer,primary_key=True)
-#   email=db.Column(db.String(320)), 
-#   username=db.Column(db.String(40))
-#   hash=db.Column(db.String())
-#   profile_photo_url=db.Column(db.String(), default="") 
-#   created_at=db.Column(db.DateTime, default=datetime.datetime.now) 
-#   bio=db.Column(db.String()) 
-#   confirmed=db.Column(db.Boolean, default=False)
-#   token=db.Column(db.String())
-
-#   def __init__(self,email,username,hash,token, profile_photo, confirmed):
-#     self.email=email
-#     self.username=username
-#     self.hash=hash
-#     self.token=token
-#     self.profile_photo_url=profile_photo
-#     self.confirmed=confirmed
 
 @app.route("/db", methods=["GET", "POST"])
 def cdb():
+  con = connect_db()
   cur = con.cursor()
 
-  # aa = cur.execute("CREATE TABLE posts (\
-  #   id SERIAL PRIMARY KEY NOT NULL, \
-  #   author_id INTEGER NOT NULL, \
-  #   author_username TEXT NOT NULL, \
-  #   photo_URL TEXT NOT NULL, \
-  #   description TEXT, \
-  #   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-  #   CONSTRAINT fk_author \
-  #     FOREIGN KEY(author_id) \
-	#       REFERENCES users(id) \
-  #   );"
-  # )
+  res = get_posts()
+  print("POSTS")
+  print(res)
 
-  ##
-  # FIND WHEN TO CLOSE AND OPEN THE CONNECTION
-  # WHICH ARE THE BEST PRACTICES?
-  ##
-
-  # con.commit()
-  print("RES execute")
   cur.close()
   con.close()
 
@@ -120,7 +80,8 @@ def about():
 @login_required
 def feed():
   """Show posts and create new post"""
-  res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
+  # res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
+  res = get_posts()
 
   if request.method == "POST":
     # Check if an logged user
@@ -229,15 +190,13 @@ def register():
       # return render_template("register.html", email=email, username=username)
     
     # Check if email exists already
-    response = db.execute("SELECT * FROM users WHERE email = ?", email)
-    # response = db.session.query(User).filter_by(email=email)
+    response = get_user_by_email(email)
 
     print("RESPONSE QUERY")
     print(response)
     if len(response):
       flash("User already exists, login with this email or choose another one", "warning")
       return redirect(request.url)
-      # return render_template("register.html", email=email, username=username)
 
     # Generate a hash password
     hash_password = generate_password_hash(request.form.get("password"))
@@ -251,22 +210,10 @@ def register():
     token_data = [confirmation_code, code_expiration]
     sql_token = json.dumps(token_data)
 
-    # Create user instance
-    user = User(email=email, hash=hash_password, username=username, token=sql_token)
+    # Create user in Db
+    user = register_user(email, hash_password, username, sql_token)
 
-    # Save user in the DB
-    db.session.add(user)
-    db.session.commit()
-
-    # user = db.execute(
-    #   "INSERT INTO users (email, username, hash, token) VALUES(?, ?, ?, ?)",
-    #     email,
-    #     username,
-    #     hash_password,
-    #     sql_token
-    #   )
-    
-    print(f"new user in db: {user}")
+    # print(f"new user in db: {user}")
     # Send the confirmation code by email
     mail_confirmation_code(mail, email, confirmation_code)
 
@@ -365,8 +312,8 @@ def confirm():
     
     # Fetch user
     # res = db.execute("SELECT * FROM users WHERE email = ?", email)
-    res = db.query(User).filter_by(email=email)
-
+    res = get_user_by_email(email)
+  
     print(f"res user {res}")
 
     # Check if user exists
@@ -387,12 +334,8 @@ def confirm():
     code_expiration = token[1]
 
     # Remove the confirmation code form the DB
-    db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
-    # user = User(token=null)
-
-    # Save user in the DB
-    # db.session.add(user)
-    # db.session.commit()
+    # db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
+    update_user(user["id"], "token", None)
 
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
@@ -406,7 +349,8 @@ def confirm():
 
     # If not confirmed, update the confirmed column of the user
     if not user["confirmed"]:
-      db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
+      # db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
+      update_user(user["id"], "confirmed", True)
 
     # Add user to the session
     session["user_id"] = user["id"]
