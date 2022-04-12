@@ -1,14 +1,9 @@
-from ast import Try
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, null
 # Load environment variables from .env
 load_dotenv() 
 
 import json
 import os
-import datetime
-import psycopg2
-import psycopg2.extras
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, \
@@ -21,10 +16,7 @@ from validator_collection import errors as validator_errors
 from utils.helpers import get_confirmation_code, get_expiration_date_milliseconds, mail_confirmation_code, \
   get_time_now_ms, check_email, check_url, validate_password, mail_analytics
 
-from utils.db import get_user_by_email, register_user, update_user, connect_db, get_posts
-
 from utils.decorators import login_required, unauthenticated_route
-from flask_sqlalchemy import SQLAlchemy
 
 # Configure application
 app = Flask(__name__)
@@ -49,23 +41,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-# db = SQL("sqlite:///dog.db")
-
-
-@app.route("/db", methods=["GET", "POST"])
-def cdb():
-  con = connect_db()
-  cur = con.cursor()
-
-  res = get_posts()
-  print("POSTS")
-  print(res)
-
-  cur.close()
-  con.close()
-
-  return "yes"
-
+db = SQL("sqlite:///dog.db")
 
 @app.route("/", methods=["GET", "POST"])
 @unauthenticated_route
@@ -80,8 +56,7 @@ def about():
 @login_required
 def feed():
   """Show posts and create new post"""
-  # res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
-  res = get_posts()
+  res = db.execute("SELECT * FROM posts ORDER BY created_at DESC;")
 
   if request.method == "POST":
     # Check if an logged user
@@ -190,13 +165,12 @@ def register():
       # return render_template("register.html", email=email, username=username)
     
     # Check if email exists already
-    response = get_user_by_email(email)
-
-    print("RESPONSE QUERY")
+    response = db.execute("SELECT * FROM users WHERE email = ?", email)
     print(response)
     if len(response):
       flash("User already exists, login with this email or choose another one", "warning")
       return redirect(request.url)
+      # return render_template("register.html", email=email, username=username)
 
     # Generate a hash password
     hash_password = generate_password_hash(request.form.get("password"))
@@ -209,11 +183,16 @@ def register():
 
     token_data = [confirmation_code, code_expiration]
     sql_token = json.dumps(token_data)
-
-    # Create user in Db
-    user = register_user(email, hash_password, username, sql_token)
-
-    # print(f"new user in db: {user}")
+    # Save user in the DB
+    user = db.execute(
+      "INSERT INTO users (email, username, hash, token) VALUES(?, ?, ?, ?)",
+        email,
+        username,
+        hash_password,
+        sql_token
+      )
+    
+    print(f"new user in db: {user}")
     # Send the confirmation code by email
     mail_confirmation_code(mail, email, confirmation_code)
 
@@ -236,10 +215,6 @@ def login():
   # session.clear()
 
   try:
-    mail = session["user_email"]
-    res = db.session.query(User).filter_by(email=mail)
-
-    print(f"res user {res}")
     print("SESISON EMAIL")
     # print(session["user_email"])
     print(session)
@@ -311,10 +286,7 @@ def confirm():
       return render_template("confirm.html", email=email)
     
     # Fetch user
-    # res = db.execute("SELECT * FROM users WHERE email = ?", email)
-    res = get_user_by_email(email)
-  
-    print(f"res user {res}")
+    res = db.execute("SELECT * FROM users WHERE email = ?", email)
 
     # Check if user exists
     if not len(res):
@@ -334,8 +306,7 @@ def confirm():
     code_expiration = token[1]
 
     # Remove the confirmation code form the DB
-    # db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
-    update_user(user["id"], "token", None)
+    db.execute("UPDATE users SET token=NULL WHERE id = ?", user["id"])
 
     # Check if token is expired
     if get_time_now_ms() > code_expiration:
@@ -349,8 +320,7 @@ def confirm():
 
     # If not confirmed, update the confirmed column of the user
     if not user["confirmed"]:
-      # db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
-      update_user(user["id"], "confirmed", True)
+      db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
 
     # Add user to the session
     session["user_id"] = user["id"]
