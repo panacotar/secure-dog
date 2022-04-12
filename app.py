@@ -42,6 +42,16 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///dog.db")
+# uri = os.getenv("DATABASE_URL")
+# if uri.startswith("postgres://"):
+#     uri = uri.replace("postgres://", "postgresql://")
+# db = SQL(uri)
+
+####
+# SET A TRY EXCEPT ON LINE 326
+# TEST FOR OTHER ERRORS WITH THE DB
+###
+
 
 @app.route("/", methods=["GET", "POST"])
 @unauthenticated_route
