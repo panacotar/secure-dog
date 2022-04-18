@@ -330,7 +330,7 @@ def confirm():
 
     # If not confirmed, update the confirmed column of the user
     if not user["confirmed"]:
-      db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
+      db.execute("UPDATE users SET confirmed=1 WHERE id = ?", user["id"])
 
     # Add user to the session
     session["user_id"] = user["id"]
