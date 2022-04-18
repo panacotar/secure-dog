@@ -40,7 +40,7 @@ As a first version, it utilizes SQLite3 as the Database. The app is currently ho
 - id (PRIMARY)
 - author_id (FOREIGN - user.id)
 - author_username
-- photo_URL
+- photo_url
 - description
 
 ## ENV
