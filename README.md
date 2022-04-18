@@ -1,5 +1,4 @@
 
-
 # Secure dog
 
 The app will use 2FA to authenticate users
@@ -40,7 +39,7 @@ As a first version, it utilizes SQLite3 as the Database. The app is currently ho
 - id (PRIMARY)
 - author_id (FOREIGN - user.id)
 - author_username
-- photo_URL
+- photo_url
 - description
 
 ## ENV
@@ -52,8 +51,23 @@ The contents should be the config from your mail client:
 ```
 MAIL_USERNAME="email"
 MAIL_PASSWORD="***"
+DATABASE_URL="***"
 ```
 
+## Init project
+After creating the .env file clone the repository locally, cd into the directory and create a *virtual environment* by running: 
+`python3 -m venv dogenv`
+
+Activate the virtual env:
+`source dogenv/bin/activate`
+
+Then install the libraries from the requrements.txt file:
+`pip install -r requirements.txt`
+
+After, you can start the server with
+`flask run`
+
+You can deactivate a virtual environment by typing “deactivate” in your shell.
 ## Routes
 
 #### 1. Homepage

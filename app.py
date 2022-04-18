@@ -1,4 +1,3 @@
-from ast import Try
 from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv() 
@@ -18,7 +17,6 @@ from utils.helpers import get_confirmation_code, get_expiration_date_millisecond
   get_time_now_ms, check_email, check_url, validate_password, mail_analytics
 
 from utils.decorators import login_required, unauthenticated_route
-
 
 # Configure application
 app = Flask(__name__)
@@ -43,7 +41,17 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///dog.db")
+# db = SQL("sqlite:///dog.db")
+uri = os.getenv("DATABASE_URL")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://")
+db = SQL(uri)
+
+####
+# SET A TRY EXCEPT ON LINE 326
+# TEST FOR OTHER ERRORS WITH THE DB
+###
+
 
 @app.route("/", methods=["GET", "POST"])
 @unauthenticated_route
@@ -322,7 +330,7 @@ def confirm():
 
     # If not confirmed, update the confirmed column of the user
     if not user["confirmed"]:
-      db.execute("UPDATE users SET confirmed=True WHERE id = ?", user["id"])
+      db.execute("UPDATE users SET confirmed=1 WHERE id = ?", user["id"])
 
     # Add user to the session
     session["user_id"] = user["id"]

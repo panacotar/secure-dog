@@ -8,4 +8,5 @@ instance/
 
 # virtualenv
 venv/
+dogenv/
 ENV/
