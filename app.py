@@ -47,12 +47,6 @@ if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://")
 db = SQL(uri)
 
-####
-# SET A TRY EXCEPT ON LINE 326
-# TEST FOR OTHER ERRORS WITH THE DB
-###
-
-
 @app.route("/", methods=["GET", "POST"])
 @unauthenticated_route
 def index():
@@ -176,7 +170,7 @@ def register():
     
     # Check if email exists already
     response = db.execute("SELECT * FROM users WHERE email = ?", email)
-    print(response)
+
     if len(response):
       flash("User already exists, login with this email or choose another one", "warning")
       return redirect(request.url)
@@ -223,13 +217,6 @@ def login():
 
   # Forget any user_id
   # session.clear()
-
-  try:
-    print("SESISON EMAIL")
-    # print(session["user_email"])
-    print(session)
-  except:
-    print("No session email")
   
   if request.method == "POST":
     #Clear flash messages
@@ -369,18 +356,6 @@ def notFound(e):
 @app.errorhandler(405)
 def notFound(e):
   return render_template("errors/405.html")
-
-# @app.route("/mailing/<mail_address>")
-# def mailing(mail_address):
-#   """Send a template mail"""
-#   #  mail_confirmation_code(mail, "basmiw@gmail.com", 123456)
-#   code = 123456
-#   msg = Message('Hello', sender = 'securedog@gmail.com', recipients = [str(mail_address)])
-#   msg.html = render_template('email/confirm_code.html', code=code)
-#   msg.body = "email"
-#   mail.send(msg)
-#   return "Sent"
-
 
 if __name__ == '__main__':
    app.run(debug = True)

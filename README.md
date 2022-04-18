@@ -59,15 +59,18 @@ After creating the .env file clone the repository locally, cd into the directory
 `python3 -m venv dogenv`
 
 Activate the virtual env:
+
 `source dogenv/bin/activate`
 
 Then install the libraries from the requrements.txt file:
+
 `pip install -r requirements.txt`
 
-After, you can start the server with
+After, you can start the server with:
+
 `flask run`
 
-You can deactivate a virtual environment by typing “deactivate” in your shell.
+You can deactivate a virtual environment by typing `deactivate` in your shell.
 ## Routes
 
 #### 1. Homepage
